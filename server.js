@@ -1,29 +1,33 @@
-let express = require('express');
-let path = require('path');
-let app = express();
+const express = require('express');
+const path = require('path');
+const app = express();
 
-/* - Serve the ws.html - */
+/* - Sockets - */
 
-app.get('/', function(req, res) {
+require('./ws');
+
+
+/* - Serve - */
+
+app.get('/', function(_, res) {
     res.sendFile(__dirname + '/terra.html');
 });
 
-/* - Serve the references - */
-
-app.get('/client.js', function(req, res) {
+app.get('/client.js', function(_, res) {
     res.sendFile(path.join(__dirname + '/client.js'));
 });
 
-app.get('/terra.js', function(req, res) {
+app.get('/terra.js', function(_, res) {
     res.sendFile(path.join(__dirname + '/lib/terra.js'));
 });
 
-app.get('/terra-app.js', function(req, res) {
+app.get('/terra-app.js', function(_, res) {
     res.sendFile(path.join(__dirname + '/apps/terra-app.js'));
 });
+
 
 /* - Listen - */
 
 app.listen(3000, function() {
-    console.log('### scjs server started ### ')
+    console.log('\x1b[36m%s\x1b[0m', '***  Brutes and Bullies (server) started *** ');
 });
