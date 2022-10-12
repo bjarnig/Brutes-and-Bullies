@@ -25,6 +25,10 @@ app.get('/terra-app.js', function(_, res) {
     res.sendFile(path.join(__dirname + '/apps/terra-app.js'));
 });
 
+app.get('/terra-utils.js', function(_, res) {
+    res.sendFile(path.join(__dirname + '/apps/terra-utils.js'));
+});
+
 
 /* - Listen - */
 

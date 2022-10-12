@@ -1,3 +1,5 @@
+import { templates } from "./terra-utils.js";
+
 let Terrapp = {};
 let world;
 
@@ -32,7 +34,7 @@ Terrapp.run = function () {
       return (x + y) % 2 ? a : b;
     });
   }
-  
+
   /* - Custom Work - */
 
   world.custom = {};
@@ -61,33 +63,14 @@ Terrapp.run = function () {
 
   /* - Register creatures and animate - */
 
-  terra.registerCreature({
-    type: "crea",
-    color: [138, 48, 51],
-    maxEnergy: 11, // was 50
-    initialEnergy: 10,
-    character: "o",
-    size: 10,
+  const creatures = templates(6)[0];
+  const setup = templates(6)[1];
+
+  creatures.forEach((creature) => {
+    terra.registerCreature(creature);
   });
 
-  terra.registerCreature({
-    type: "creb",
-    color: [60, 12, 6],
-    size: 4,
-    initialEnergy: 5,
-    maxEnergy: 400,
-    wait: function () {
-      this.energy += 2;
-    },
-    move: false,
-    reproduceLv: 0.65,
-  });
-
-  world.grid = world.makeGridWithDistribution([
-    ["crea", 5],
-    ["creb", 1],
-  ]);
-
+  world.grid = world.makeGridWithDistribution(setup);
   world.animate();
 };
 
