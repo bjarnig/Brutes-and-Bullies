@@ -284,6 +284,49 @@ export function templates(index) {
     ];
 
   }
+
+  if(index == 7) {
+
+    creatures.push({
+      type: 'plant',
+      color: [0, 120, 0],
+      size: 10,
+      initialEnergy: 5,
+      maxEnergy: 10,
+      wait: function() {
+        // photosynthesis :)
+        this.energy += 1;
+      },
+      move: false,
+      reproduceLv: 0.65
+    });
+    
+    creatures.push({
+      type: 'brute',
+      color: [0, 255, 255],
+      maxEnergy: 30,
+      initialEnergy: 10,
+      wait: function() {
+        // photosynthesis :)
+        this.energy += 2;
+      },
+      size: 20
+    });
+    
+    creatures.push({
+      type: 'bully',
+      color: [241, 196, 15],
+      initialEnergy: 20,
+      reproduceLv: 0.8,
+      sustainability: 1,
+      wait: function() {
+        // photosynthesis :)
+        this.energy += 6;
+      },
+    });
+    
+    world = [['plant', 15], ['brute', 15], ['bully', 5]];
+  }
   
   return [creatures, world];
 }

@@ -12,15 +12,10 @@ OSCdef(\x, {|msg, time|
 	msg[1].postln;
 
 	if(msg[1].asString == "hundatussa", {
-
 		"asdfasfdasdf".postln;
-
 		// send back to the simulation !
-
 		n.sendMsg("/hello", "there");
-
-	})
-
+	});
 
 }, "\scjs");
 
