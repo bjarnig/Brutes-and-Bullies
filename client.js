@@ -15,9 +15,7 @@ WsClient.init = function () {
   };
 
   ws.onmessage = function (ev) {
-    console.log(" ## Recieving message");
-    console.log(ev);
-
+    //console.log(ev);
     if (WsClient.listen) {
       WsClient.listen(ev);
     }
