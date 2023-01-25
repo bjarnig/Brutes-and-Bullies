@@ -2,6 +2,7 @@ const express = require('express');
 const path = require('path');
 const app = express();
 
+
 /* - Sockets - */
 
 require('./ws');
@@ -33,5 +34,5 @@ app.get('/terra-utils.js', function(_, res) {
 /* - Listen - */
 
 app.listen(3000, function() {
-    console.log('\x1b[36m%s\x1b[0m', '***  Brutes and Bullies (server) started *** ');
+    console.log('\x1b[36m%s\x1b[0m', '*** Brutes and Bullies (server) started *** ');
 });

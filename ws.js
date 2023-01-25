@@ -4,15 +4,15 @@
  *
  **/
 
-let wsc = null;
+const clients = [];
 
-var WebSocketServer = require("ws").Server,
+const WebSocketServer = require("ws").Server,
   wss = new WebSocketServer({
     port: 40510,
   }),
   osc = require("osc");
 
-let udpPort = new osc.UDPPort({
+const udpPort = new osc.UDPPort({
   // This is the port we're listening on.
   localAddress: "127.0.0.1",
   localPort: 57121,
@@ -29,13 +29,10 @@ udpPort.open();
 wss.on("connection", function (ws) {
   console.log("** SCJS Websocket connection has connected");
 
-  wsc = ws; /// ??
-
   // listen to the client file
-  wsc.on("message", function (message) {
+  ws.on("message", function (message) {
     console.log("received: %s", message);
 
-    //if (message === "scstart" || message === "scstop") {
     let msg = {
       address: "/scjs",
       args: [
@@ -49,24 +46,22 @@ wss.on("connection", function (ws) {
         },
       ],
     };
-    // Send the messge to SuperCollider
-    // console.log(
-    //   "Sending message",
-    //   msg.address,
-    //   msg.args,
-    //   "to",
-    //   udpPort.options.remoteAddress + ":" + udpPort.options.remotePort
-    // );
     udpPort.send(msg);
-    // }
   });
+
+  clients.push(ws);
 });
 
 // Message from SuperCollider
 udpPort.on("message", function (msg) {
   if (msg && msg.address) {
     console.log(JSON.stringify(msg));
-    // Send to browser
-    wsc.send(msg.args[0].value);
+    // Send to all clients (browsers)
+    for (let client of clients) {
+      // TODO: Filter our the lost connection sockets
+      if(client.readyState == 1) {
+        client.send(msg.args[0].value);
+      }
+    }
   }
 });

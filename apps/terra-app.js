@@ -1,17 +1,12 @@
 import { templates } from "./terra-utils.js";
 import { mapper } from "./terra-utils.js";
+import { rrange } from "./terra-utils.js";
 
 let Terrapp = {};
 let world;
 let listeners = [];
 
 /* - Utilities - */
-
-function rrange(min, max) {
-  min = Math.ceil(min);
-  max = Math.floor(max);
-  return Math.floor(Math.random() * (max - min + 1)) + min;
-}
 
 function getQueryVariable(variable) {
   const query = window.location.search.substring(1);
@@ -37,11 +32,10 @@ function asObject(str) {
 
 function getAgent(name) {
   const reference = getQueryVariable(name);
-
-  if (reference === "1") {
-    return { name: "A" };
+  if (reference) {
+    return { name: reference };
   } else {
-    return { name: "B" };
+    return { name: "A" };
   }
 }
 
@@ -51,34 +45,57 @@ const agent = getAgent("agent");
 
 let ti = 0;
 window.onclick = function () {
-  Terrapp.run();
-  WsClient.send("scstart");
   document.getElementById("info").innerHTML = " ## system " + agent.name;
-  // + new Date().toLocaleTimeString("nl-NL");
+};
 
-  Terrapp.run();
+WsClient.listen = function (msg) {
+    
+  const obj = asObject(msg.data);
+  console.log(obj);
+  
+  if(obj.agent === agent.name) {
 
-  // setInterval(function () {
-  // }, 2000);
+    if (obj.action === "attach") {
+      listeners = listeners.filter((item) => item.id !== obj.id);
+      listeners.push({ id: obj.id, type: obj.type });
+    }
+
+    if (obj.action === "detach") {
+      listeners = listeners.filter((item) => item.id !== obj.id);
+    }
+
+    if(obj.action === "start") {
+      Terrapp.run();
+    }
+
+    if(obj.action === "stop") {
+      world.stop();
+    }
+
+    if(obj.action === "destroy") {
+      world.destroy();
+    }
+
+    if(obj.action === "scene") {
+      ti = obj.index;
+      Terrapp.run();
+    }
+
+    if(obj.action === "rscene") {
+      ti = rrange(0, 7);
+      Terrapp.run();
+    }
+  }
 };
 
 /* - Terra - */
 
 Terrapp.run = function () {
-
   if (!world) {
     world = new terra.Terrarium(51, 50, { id: "myTerrarium", cellSize: 15 });
-  } else {
-    var a = "a",
-      b = "b";
-    terra.registerCreature({ type: a });
-    terra.registerCreature({ type: b });
-    world.grid = world.makeGrid(function (x, y) {
-      return (x + y) % 2 ? a : b;
-    });
   }
 
-  /* - Custom Work - */
+  /* - Register Custom Work - */
 
   world.custom = {};
   world.custom.counter = 0;
@@ -87,42 +104,12 @@ Terrapp.run = function () {
     world.custom.counter += 1;
 
     if (world.custom.counter % world.custom.rate == 0) {
-      
-      /*
-      grid.forEach((line) => {
-        if (world.custom.counter % 64 == 0) {
-        }
-        line.forEach((column) => {
-          // Do custom work with the grid
-        });
-      });
-      */
-
-      // console.log(" ## custom work: " + world.custom.counter);
-      // WsClient.send(agent.name + " " + mapper(grid));
-
-    let res = mapper(grid);
-
+      let res = mapper(grid);
+      console.log(res.avergaAge);
       listeners.forEach((l) => {
         WsClient.send(agent.name + " " + l.id + " " + res[l.type]);
       });
-
     }
-  };
-
-  WsClient.listen = function (msg) {
-    const obj = asObject(msg.data);
-
-    if(obj.action === 'attach') {
-      listeners = listeners.filter(item => item.id !== obj.id);
-      listeners.push({ id : obj.id, type : obj.type });
-    }
-
-    if(obj.action === 'detach') {
-      listeners = listeners.filter(item => item.id !== obj.id);
-    }
-
-    console.log(listeners);
   };
 
   /* - Register creatures and animate - */
@@ -137,11 +124,6 @@ Terrapp.run = function () {
   world.grid = world.makeGridWithDistribution(setup);
   world.animate();
 
-  setTimeout(() => {
-    ti = rrange(0, 7);
-    Terrapp.run();
-    // WsClient.send("scstart interval: " + ti);
-  }, rrange(6000, 10000));
 };
 
 /* - Exports - */

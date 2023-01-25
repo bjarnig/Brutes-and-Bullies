@@ -4,7 +4,7 @@
  *
  **/
 
-let WsClient = {};
+let WsClient = {}, agents = 'xyz', agentCount = 0;
 
 WsClient.init = function () {
   const ws = new WebSocket("ws://localhost:40510");
