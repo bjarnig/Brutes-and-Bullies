@@ -1,4 +1,133 @@
 
+~simulation = BrutesAndBullies();
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+~simulation.init()
+
+~simulation.start("x")
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+~simulation.attach("x","nanite","maxAge")
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+~simulation.attach("x","depfm","averageEnergy")
+
+
+
+
+
+
+
+
+
+
+
+
+
+~simulation.start("y")
+
+~simulation.attach("y","bloded")
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+~simulation.scene( ["x","y"], [2,6])
+
+~simulation.fold( ["x","y"], "bloded")
+
+~simulation.seed()
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+~simulation.terminate()
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 (
 
 SynthDef(\mySynth, {|amp=0.2, freq=60, gate=1, atk=1, sus=1, rel=1|
@@ -138,7 +267,8 @@ Ndef(\depfm, {|freqMin=5, freqMax=10, mul=20, add=80, rate=0.5, modFreq=2100, in
 
 // Window Y is started through SuperCollider and a sound process is attached to Y, minAge
 (
-n.sendMsg("/", (\agent : "y", \action : "start").asString); n.sendMsg("/", (\agent : "y", \action : "scene", \index : 4).asString);
+n.sendMsg("/", (\agent : "y", \action : "start").asString);
+n.sendMsg("/", (\agent : "y", \action : "scene", \index : 4).asString);
 n.sendMsg("/", (\agent : "y", \action : "attach", \type : "averageEnergy", \id: "y01" ).asString);
 
 Ndef(\bloded, { |freq=90, modFreq=11, harms=150|
