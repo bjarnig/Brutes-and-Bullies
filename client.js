@@ -15,7 +15,6 @@ WsClient.init = function () {
   };
 
   ws.onmessage = function (ev) {
-    //console.log(ev);
     if (WsClient.listen) {
       WsClient.listen(ev);
     }

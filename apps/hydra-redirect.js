@@ -1,12 +1,3 @@
-import { templates } from "./terra-utils.js";
-import { mapper } from "./terra-utils.js";
-import { rrange } from "./terra-utils.js";
-
-let Terrapp = {};
-let world;
-let listeners = [];
-
-/* - Utilities - */
 
 function getQueryVariable(variable) {
   const query = window.location.search.substring(1);
@@ -39,22 +30,7 @@ function getAgent(name) {
   }
 }
 
-/* - Events - */
-
 const agent = getAgent("agent");
-
-let ti = 0;
-window.onclick = function () {
-  
-  document.getElementById("info").innerHTML = "[ "+agent.name+" ]";
-
-  // temp
-  // setInterval(function(){
-  //   ti = rrange(0, 19);
-  //   Terrapp.run();
-  // }, rrange(3000,8000));
-
-};
 
 WsClient.listen = function (msg) {
 
@@ -70,10 +46,6 @@ WsClient.listen = function (msg) {
 
     if (obj.action === "detach") {
       listeners = listeners.filter((item) => item.id !== obj.id);
-    }
-
-    if (obj.action === "detachAll") {
-      listeners = [];
     }
 
     if(obj.action === "start") {
@@ -109,47 +81,3 @@ WsClient.listen = function (msg) {
     }
   }
 };
-
-/* - Terra - */
-
-Terrapp.run = function () {
-  if (!world) {
-    world = new terra.Terrarium(60, 40, { id: "myTerrarium", cellSize: 15 });
-  }
-
-  /* - Register Custom Work - */
-
-  world.custom = {};
-  world.custom.counter = 0;
-  world.custom.rate = 50;
-  world.custom.work = (grid) => {
-    world.custom.counter += 1;
-
-    if (world.custom.counter % world.custom.rate == 0) {
-      let res = mapper(grid);
-      console.log(res.avergaAge);
-      listeners.forEach((l) => {
-        WsClient.send(agent.name + " " + l.id + " " + res[l.type]);
-      });
-    }
-  };
-
-  /* - Register creatures and animate - */
-
-  const creatures = templates(ti)[0];
-  const setup = templates(ti)[1];
-
-  creatures.forEach((creature) => {
-    terra.registerCreature(creature);
-  });
-
-  world.grid = world.makeGridWithDistribution(setup);
-  world.animate();
-
-};
-
-/* - Exports - */
-
-if (typeof module !== "undefined") {
-  module.exports = Terrapp;
-}

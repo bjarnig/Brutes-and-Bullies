@@ -1,5 +1,5 @@
 <head>
-	<title>Terra</title>
+	<title>Hydra</title>
 	<meta charset="utf-8">
 	<meta name="viewport" content="width=device-width, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0">
 	<style>
@@ -43,16 +43,25 @@
 
 	</style>
 
-	<script src="client.js"></script>
+	<script src="http://localhost:3000/client.js"></script>
 
 </head>
 
 <body>
 	<div id="info">
-		<p id="myList"></p>
-	</div>
-
-	<script src="terra.js"></script>
-	<script type="module" src="terra-app.js"></script>
-
+    </div>
 </body>
+
+<script src="http://localhost:3000/hydra-synth.js"></script>
+
+<script>
+
+const hydra = new Hydra({ detectAudio: false });
+
+s0.initVideo("http://localhost:3000/recl.mov");
+
+src(s0).modulatePixelate( noise(3 * Math.random(),29),2,2).out();
+
+</script>
+
+<script type="module" src="http://localhost:3000/hydra-redirect.js"></script>
